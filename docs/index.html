@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Welcome</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .page {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 40px 20px 60px;
+    }
+
+    .image-wrap {
+      width: 100%;
+      max-width: 340px;
+      aspect-ratio: 1 / 1;
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-14px);
+      }
+    }
+
+    .image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .title {
+      margin-top: 28px;
+      color: #fff;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 13px;
+      letter-spacing: 0.5px;
+    }
+
+    .play-btn {
+      margin-top: 36px;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #e94560, #c23152);
+      box-shadow: 0 12px 30px rgba(233, 69, 96, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .play-btn:active {
+      transform: scale(0.92);
+      box-shadow: 0 6px 16px rgba(233, 69, 96, 0.35);
+    }
+
+    .play-btn svg {
+      width: 30px;
+      height: 30px;
+      fill: #fff;
+    }
+
+    /* Pulse ring when playing */
+    .play-btn.playing::before,
+    .play-btn.playing::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid rgba(233, 69, 96, 0.6);
+      animation: pulse 1.8s ease-out infinite;
+    }
+
+    .play-btn.playing::after {
+      animation-delay: 0.6s;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.7;
+      }
+
+      100% {
+        transform: scale(1.8);
+        opacity: 0;
+      }
+    }
+
+    .hint {
+      margin-top: 18px;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ---- Room buttons ---- */
+    .room-section {
+      margin-top: 44px;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .room-label {
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .room-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .room-btn {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border-radius: 18px;
+      border: none;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      -webkit-appearance: none;
+      appearance: none;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+
+    .room-btn:active {
+      transform: scale(0.94);
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .room-btn.active {
+      background: rgba(233, 69, 96, 0.25);
+      box-shadow: 0 0 0 1px rgba(233, 69, 96, 0.5), 0 0 20px rgba(233, 69, 96, 0.2);
+    }
+
+    .room-btn .room-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .room-btn .room-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.85);
+      letter-spacing: 1px;
+    }
+
+    .room-btn.active .room-name {
+      color: #fff;
+    }
+
+    /* active pulse dot */
+    .room-btn.active::after {
+      content: "";
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #e94560;
+      animation: dot-pulse 1.2s ease-out infinite;
+    }
+
+    @keyframes dot-pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.3;
+        transform: scale(0.5);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="image-wrap">
+      <img src="pics/tpx.png" alt="封面">
+    </div>
+    <div class="title">欢迎来到乐享居体验馆</div>
+    <div class="subtitle">佛山分公司</div>
+
+    <button class="play-btn" id="playBtn" aria-label="播放">
+      <svg id="icon" viewBox="0 0 24 24">
+        <path d="M8 5v14l11-7z" />
+      </svg>
+    </button>
+
+    <div class="hint" id="hint">点击播放</div>
+
+    <div class="room-section">
+      <div class="room-label">— 场景选择 —</div>
+      <div class="room-grid">
+        <button class="room-btn" data-room="1" data-src="music/1.mp3">
+          <span class="room-icon">🍳</span>
+          <span class="room-name">厨房</span>
+        </button>
+        <button class="room-btn" data-room="2" data-src="music/2.mp3">
+          <span class="room-icon">🍽️</span>
+          <span class="room-name">用餐</span>
+        </button>
+        <button class="room-btn" data-room="3" data-src="music/3.mp3">
+          <span class="room-icon">🛋️</span>
+          <span class="room-name">客厅</span>
+        </button>
+        <button class="room-btn" data-room="4" data-src="music/4.mp3">
+          <span class="room-icon">❤️‍🩹</span>
+          <span class="room-name">康复</span>
+        </button>
+        <button class="room-btn" data-room="5" data-src="music/5.mp3">
+          <span class="room-icon">🛏️</span>
+          <span class="room-name">卧室</span>
+        </button>
+        <button class="room-btn" data-room="6" data-src="music/6.mp3">
+          <span class="room-icon">🛁</span>
+          <span class="room-name">卫浴</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <audio id="audio" src="music/welcome.mp3" preload="auto"></audio>
+  <audio id="audio-1" src="music/1.mp3" preload="auto"></audio>
+  <audio id="audio-2" src="music/2.mp3" preload="auto"></audio>
+  <audio id="audio-3" src="music/3.mp3" preload="auto"></audio>
+  <audio id="audio-4" src="music/4.mp3" preload="auto"></audio>
+  <audio id="audio-5" src="music/5.mp3" preload="auto"></audio>
+  <audio id="audio-6" src="music/6.mp3" preload="auto"></audio>
+
+  <script>
+    (function () {
+      var btn = document.getElementById('playBtn');
+      var icon = document.getElementById('icon');
+      var hint = document.getElementById('hint');
+      var audio = document.getElementById('audio');
+
+      var PLAY_PATH = '<path d="M8 5v14l11-7z"/>';
+      var PAUSE_PATH = '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>';
+
+      btn.addEventListener('click', function () {
+        if (audio.paused) {
+          // 停止所有房间音频
+          stopAllRoomAudios();
+          audio.play().then(function () {
+            icon.innerHTML = PAUSE_PATH;
+            btn.classList.add('playing');
+            hint.textContent = '正在播放…';
+          }).catch(function (e) {
+            hint.textContent = '播放失败，请重试';
+          });
+        } else {
+          audio.pause();
+          icon.innerHTML = PLAY_PATH;
+          btn.classList.remove('playing');
+          hint.textContent = '已暂停';
+        }
+      });
+
+      audio.addEventListener('ended', function () {
+        icon.innerHTML = PLAY_PATH;
+        btn.classList.remove('playing');
+        hint.textContent = '点击播放';
+      });
+
+      /* ---- Room buttons ---- */
+      var roomBtns = document.querySelectorAll('.room-btn');
+      var currentRoomAudio = null;
+      var currentRoomBtn = null;
+
+      function stopAllRoomAudios() {
+        for (var i = 1; i <= 6; i++) {
+          var a = document.getElementById('audio-' + i);
+          if (a && !a.paused) {
+            a.pause();
+            a.currentTime = 0;
+          }
+        }
+        if (currentRoomBtn) {
+          currentRoomBtn.classList.remove('active');
+          currentRoomBtn = null;
+          currentRoomAudio = null;
+        }
+      }
+
+      function stopMainAudio() {
+        if (!audio.paused) {
+          audio.pause();
+          audio.currentTime = 0;
+          icon.innerHTML = PLAY_PATH;
+          btn.classList.remove('playing');
+          hint.textContent = '点击播放';
+        }
+      }
+
+      roomBtns.forEach(function (rmBtn) {
+        rmBtn.addEventListener('click', function () {
+          var src = rmBtn.getAttribute('data-src');
+          var audioEl = document.querySelector('audio[src="' + src + '"]');
+          if (!audioEl) return;
+
+          // If clicking the same active button, toggle play/pause
+          if (currentRoomBtn === rmBtn) {
+            if (audioEl.paused) {
+              audioEl.play().catch(function () { });
+            } else {
+              audioEl.pause();
+              rmBtn.classList.remove('active');
+              currentRoomBtn = null;
+              currentRoomAudio = null;
+            }
+            return;
+          }
+
+          // Stop main welcome audio
+          stopMainAudio();
+          // Stop previous room audio
+          if (currentRoomAudio && !currentRoomAudio.paused) {
+            currentRoomAudio.pause();
+            currentRoomAudio.currentTime = 0;
+          }
+          if (currentRoomBtn) {
+            currentRoomBtn.classList.remove('active');
+          }
+
+          // Play new room audio
+          audioEl.currentTime = 0;
+          audioEl.play().then(function () {
+            rmBtn.classList.add('active');
+            currentRoomAudio = audioEl;
+            currentRoomBtn = rmBtn;
+          }).catch(function () {
+            hint.textContent = '该音频加载失败，请确保文件存在';
+          });
+        });
+      });
+
+      // When a room audio ends, deactivate its button
+      for (var i = 1; i <= 6; i++) {
+        var a = document.getElementById('audio-' + i);
+        if (a) {
+          a.addEventListener('ended', function () {
+            if (currentRoomBtn) {
+              currentRoomBtn.classList.remove('active');
+              currentRoomBtn = null;
+              currentRoomAudio = null;
+            }
+          });
+        }
+      }
+    })();
+  </script>
+</body>
+
+</html>
