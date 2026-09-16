@@ -358,7 +358,8 @@
       roomBtns.forEach(function (rmBtn) {
         rmBtn.addEventListener('click', function () {
           var src = rmBtn.getAttribute('data-src');
-          var audioEl = document.querySelector('audio[src="' + src + '"]');
+          //var audioEl = document.querySelector('audio[src="' + src + '"]');
+          var audioEl = document.querySelector('audio[src$="' + src + '"]');
           if (!audioEl) return;
 
           // If clicking the same active button, toggle play/pause
